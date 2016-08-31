@@ -1,4 +1,4 @@
-app.factory('AuthFactory', function($http, $log) {
+app.factory('AuthFactory', function($http, $log, $rootScope) {
     var AuthFactory = {};
     // AuthFactory.currentUser;
 
@@ -16,6 +16,14 @@ app.factory('AuthFactory', function($http, $log) {
         .then(function(response){
             return response.data;
         })
+    }
+
+    AuthFactory.getAdminUser = function() {
+        return $http.get('/users')
+                .then(function(response) {
+                    console.log(response.data);
+                    return response.data;
+                });
     }
 
     return AuthFactory;

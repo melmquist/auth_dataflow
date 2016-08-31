@@ -65,11 +65,25 @@ app.put('/logout', function(req, res, next){
   console.log(req.session.userId);
 
   req.session.userId = null;
+  res.sendStatus(204);
 
   console.log('req session: ', req.session);
   // req.session.destroy();
 });
 
+app.get('/users', function(req, res, next) {
+  User.findAll({
+    where: {
+      isAdmin: true,
+      id: req.session.userId
+    }
+  })
+  .then(function(users) {
+    console.log('ADMIN USERS: ', users);
+    res.send(users);
+  })
+  .catch(next);
+})
 
 app.get('/auth/me', function(req, res, next){
   User.findOne({
@@ -102,7 +116,7 @@ passport.use(
  new GoogleStrategy({
    clientID: '747541816255-7ujcnta6i9loqap6000a3kc289m01f2r.apps.googleusercontent.com',
    clientSecret: '_pPgRyKoeLUT4SH9j6c6giFY',
-   callbackURL: 'http://localhost:8080/auth/google/callback'
+   callbackURL: 'http://127.0.0.1:8080/auth/google/callback'
  },
  // Google will send back the token and profile
  function (token, refreshToken, profile, done) {
@@ -127,6 +141,18 @@ passport.use(
 
  })
 );
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+  User.findById(id)
+  .then(function (user) {
+    done(null, user);
+  })
+  .catch(done);
+});
 
 var validFrontendRoutes = ['/', '/stories', '/users', '/stories/:id', '/users/:id', '/signup', '/login'];
 var indexPath = path.join(__dirname, '..', '..', 'public', 'index.html');

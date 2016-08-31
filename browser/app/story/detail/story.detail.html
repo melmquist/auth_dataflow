@@ -18,8 +18,9 @@
     </li>
   </ul>
   <br>
+  {{ isAdmin }}
   <p
-    contenteditable="{{ isLoggedIn }}"
+    contenteditable="{{isAdmin}}"
     ng-model="story.paragraphs"
     ng-model-options="{debounce: 500}"
     ng-list="<br><br>"

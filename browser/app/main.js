@@ -15,6 +15,12 @@ app.run(function (AuthFactory, $rootScope){
     AuthFactory.getCurrentUser()
     .then(function(currentUser){
         $rootScope.currentUser = currentUser;
+    });
+
+    AuthFactory.getAdminUser()
+    .then(function(adminUser) {
+        $rootScope.adminUser = adminUser;
+        console.log($rootScope.adminUser);
     })
 })
 
